@@ -13,9 +13,15 @@ with open('Job_Listings_Duplicates.csv', 'w', newline='', encoding='utf-8') as j
     job_listings_duplicates.writerow(
         ['Title', 'Company', 'Location', 'Job Site', 'Position', 'Post Date', 'Extract Date', 'Job URL'])  # write in the headers into the first row
 
+
 print('Glassdoor Job Scraper Initiated!!!')
 exec(open("JobScraper_Glassdoor.py").read())  # run the glassdoor job scraper
 print('Glassdoor Job Scraper Finished!!!')
+print('')
+
+print('Linkedin Job Scraper Initiated!!!')
+exec(open("JobScraper_Linkedin.py").read())  # run the linkedin job scraper
+print('Linkedin Job Scraper Finished!!!')
 print('')
 
 print('Indeed Job Scraper Initiated!!!')
@@ -26,11 +32,6 @@ print('')
 print('IrishJobs Job Scraper Initiated!!!')
 exec(open("JobScraper_IrishJobs.py").read())  # run the irishjobs job scraper
 print('IrishJobs Job Scraper Finished!!!')
-print('')
-
-print('Linkedin Job Scraper Initiated!!!')
-exec(open("JobScraper_Linkedin.py").read())  # run the linkedin job scraper
-print('Linkedin Job Scraper Finished!!!')
 print('')
 
 job_listings_file = pd.read_csv("Job_Listings_Duplicates.csv")  # read in job listings duplicates csv file using pandas

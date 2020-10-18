@@ -68,7 +68,13 @@ class IndeedJobScraper:
         self.driver.get(current_url + distance_radius + recruiter_type)  # retrieve the url with added filters
         sleep(5)  # loading time
 
-    def get_job_info(self, indeed_position):
+        try:
+            close_popup = self.driver.find_element_by_xpath("//button[@aria-label='Close']")
+            close_popup.click()
+        except AttributeError:
+            pass
+
+    def get_job_info(self):
         """Retrieve Information from Job Card/Listing and Export to '.CSV' File"""
         records = []  # list to store 'record' (tuple) for each job card/listing
 
@@ -86,7 +92,7 @@ class IndeedJobScraper:
                 extract_date = datetime.today().strftime('%Y-%m-%d')  # retrieve extract date (when script ran to retrieve jobs)
                 job_url = 'https://ie.indeed.com' + job.h2.a.get('href')  # retrieve job url
 
-                record = (title, company, location, job_site, indeed_position, post_date, extract_date, job_url)  # add all variables into record (tuple)
+                record = (title, company, location, job_site, post_date, extract_date, job_url)  # add all variables into record (tuple)
 
                 records.append(record)  # append current job card to records list
 
@@ -107,7 +113,7 @@ class IndeedJobScraper:
         sleep(5)  # loading time
         self.filter()  # call 'filter' function
         sleep(5)  # loading time
-        self.get_job_info(indeed_position)  # call 'get_job_info' function
+        self.get_job_info()  # call 'get_job_info' function
         sleep(5)  # loading time
 
 

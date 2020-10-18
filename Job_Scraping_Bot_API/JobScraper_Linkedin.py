@@ -71,7 +71,7 @@ class LinkedinJobScraper:
         apply_filter_button.click()  # click 'apply filters'' button
         sleep(5)  # loading time
 
-    def get_job_info(self, linkedin_position):
+    def get_job_info(self):
         """Retrieve Information from Job Card/Listing and Export to '.CSV' File"""
         records = []  # list to store 'record' (tuple) for each job card/listing
         next_page_value = 25  # allows us to iterate through next pages (next page from 1 is 2)
@@ -102,7 +102,7 @@ class LinkedinJobScraper:
                 extract_date = datetime.today().strftime('%d/%m/%Y')  # retrieve extract date (when script ran to retrieve jobs)
                 job_url = 'https://www.linkedin.com' + job.find("div", {"class": re.compile('mr1 artdeco')}).find("a", {"href": re.compile('/jobs')}).get('href')  # retrieve job url
 
-                record = (title, company, location, job_site, linkedin_position, post_date, extract_date, job_url)  # add all variables into record (tuple)
+                record = (title, company, location, job_site, post_date, extract_date, job_url)  # add all variables into record (tuple)
 
                 records.append(record)  # append current job card to records list
 
@@ -138,7 +138,7 @@ class LinkedinJobScraper:
         sleep(5)  # loading time
         self.filter()  # call 'filter' function
         sleep(5)  # loading time
-        self.get_job_info(linkedin_position)    # call 'get_job_info' function
+        self.get_job_info()    # call 'get_job_info' function
         sleep(5)  # loading time
 
 

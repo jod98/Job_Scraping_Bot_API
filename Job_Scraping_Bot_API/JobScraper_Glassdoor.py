@@ -63,7 +63,7 @@ class GlassdoorJobScraper:
         search_location.send_keys(Keys.RETURN)  # simulates pressing "enter" on keyboard i.e. submit
         sleep(5)  # loading time
 
-    def get_job_info(self, glassdoor_position):
+    def get_job_info(self):
         """Retrieve Information from Job Card/Listing and Export to '.CSV' File"""
         records = []  # list to store 'record' (tuple) for each job card/listing
         post_date_new = ''  # needed -> error ('variable might be referenced before assignment') - in below
@@ -90,7 +90,7 @@ class GlassdoorJobScraper:
                     '%Y-%m-%d')  # retrieve extract date (when script ran to retrieve jobs)
                 job_url = 'https://www.glassdoor.ie' + job.div.a.get('href')  # retrieve job url
 
-                record = (title, company, location, job_site, glassdoor_position, post_date_new, extract_date,
+                record = (title, company, location, job_site, post_date_new, extract_date,
                           job_url)  # add all variables into record (tuple)
 
                 records.append(record)  # append current job card to records list
@@ -130,7 +130,7 @@ class GlassdoorJobScraper:
         self.job_search(glassdoor_position,
                         glassdoor_location)  # call 'job_search' function and pass in 'position' and 'location' arguments
         sleep(5)  # loading time
-        self.get_job_info(glassdoor_position)  # call 'get_job_info' function
+        self.get_job_info()  # call 'get_job_info' function
         sleep(5)  # loading time
 
 
