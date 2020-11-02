@@ -5,6 +5,7 @@ import json  # format for storing and exchanging data (text written in Javascrip
 import csv  # format for storing and exchanging data (text separated with ',' - Common Separated Values)
 from bs4 import BeautifulSoup  # library for pulling data out of HTML and XML files. With your favourite parser, it provides ways of searching the parse tree
 from datetime import datetime  # provides current time and date
+from selenium.common.exceptions import NoSuchElementException  # no such element exists
 
 
 class IndeedJobScraper:
@@ -33,7 +34,8 @@ class IndeedJobScraper:
         login_pass.clear()  # clear current contents
         login_pass.send_keys(self.indeed_password)  # find 'password' textbox
         login_pass.send_keys(Keys.RETURN)  # simulates pressing "enter" on keyboard i.e. submit
-        sleep(5)  # loading time
+        #sleep(5)  # loading time
+        sleep(120)  # security verification
 
     def job_search(self, indeed_position, indeed_location):
         """Access 'Jobs' Section and Input Position and Location"""
@@ -69,9 +71,9 @@ class IndeedJobScraper:
         sleep(5)  # loading time
 
         try:
-            close_popup = self.driver.find_element_by_xpath("//button[@aria-label='Close']")
-            close_popup.click()
-        except AttributeError:
+            close_popup = self.driver.find_element_by_xpath("//button[@aria-label='Close']")  # locating 'X' button for close popup
+            close_popup.click()  # click 'X' button to close popup
+        except NoSuchElementException:
             pass
 
     def get_job_info(self):
@@ -84,16 +86,36 @@ class IndeedJobScraper:
             job_card = soup.find_all('div', 'jobsearch-SerpJobCard unifiedRow row result clickcard')  # find all job cards/listings
 
             for job in job_card:  # iterate through all job listings
-                title = job.h2.a.get('title')  # retrieve job title
-                company = job.find(name="span", class_="company").text.strip()  # retrieve company name
-                location = job.find(name="div", class_="recJobLoc").get('data-rc-loc')  # retrieve job location
-                job_site = 'Indeed'  # retrieve job site
-                post_date = job.find(name="span", class_="date").text.replace(' ago', '')  # retrieve job post date without 'ago' at end
-                extract_date = datetime.today().strftime('%Y-%m-%d')  # retrieve extract date (when script ran to retrieve jobs)
-                job_url = 'https://ie.indeed.com' + job.h2.a.get('href')  # retrieve job url
+                try:
+                    title = job.h2.a.get('title')  # retrieve job title
+                except AttributeError:
+                    title = ""
+                try:
+                    company = job.find(name="span", class_="company").text.strip()  # retrieve company name
+                except AttributeError:
+                    company = ""
+                try:
+                    location = job.find(name="div", class_="recJobLoc").get('data-rc-loc')  # retrieve job location
+                except AttributeError:
+                    location = ""
+                try:
+                    job_site = 'Indeed'  # retrieve job site
+                except AttributeError:
+                    job_site = ""
+                try:
+                    post_date = job.find(name="span", class_="date").text.replace(' ago', '')  # retrieve job post date without 'ago' at end
+                except AttributeError:
+                    post_date = ""
+                try:
+                    extract_date = datetime.today().strftime('%Y-%m-%d')  # retrieve extract date (when script ran to retrieve jobs)
+                except AttributeError:
+                    extract_date = ""
+                try:
+                    job_url = 'https://ie.indeed.com' + job.h2.a.get('href')  # retrieve job url
+                except AttributeError:
+                    job_url = ""
 
                 record = (title, company, location, job_site, post_date, extract_date, job_url)  # add all variables into record (tuple)
-
                 records.append(record)  # append current job card to records list
 
             try:

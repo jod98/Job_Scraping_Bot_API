@@ -43,7 +43,14 @@ class IrishjobsJobScraper:
         sleep(5)  # loading time
 
         search_position = self.driver.find_element_by_id('Keywords')  # find 'position' textbox
-        search_position.clear()  # clear current contents
+        search_position_current_text = search_position.get_attribute('populated')
+
+        try:
+            for i in search_position_current_text:  # iterate all chars in the 'location' textbox (autofilled word)
+                search_position.send_keys(Keys.BACKSPACE)  # and delete all the chars
+        except AttributeError:
+            pass  # if autofill turned of (possible future update to site) then pass i.e. move on
+
         search_position.send_keys(irishjobs_position)  # input 'position' into textbox
 
         select_location = Select(self.driver.find_element_by_id('Location'))  # find 'location' textbox
@@ -70,12 +77,40 @@ class IrishjobsJobScraper:
             job_card = soup.find_all("div", {"itemtype": "https://schema.org/JobPosting"})  # find all job cards/listings
 
             for job in job_card:  # iterate through all job listings
-                title = job.find("h2", {"itemprop": "title"}).find("a", {"href": re.compile('/Jobs')}).text  # retrieve job title
-                company = job.find("a", {"itemprop": "hiringOrganization"}).text  # retrieve company
-                location = job.find("li", {"class": "location"}).find("a", {"href": re.compile('/Jobs')}).text  # retrieve job location
-                job_site = 'Irish Jobs'  # retrieve job site
-                post_date = job.find("li", {"itemprop": "datePosted"}).text.replace('Updated ', '')  # retrieve job post date
-                extract_date = datetime.today().strftime('%d/%m/%Y')  # retrieve extract date (when script ran to retrieve jobs)
+                try:
+                    title = job.find("h2", {"itemprop": "title"}).find("a", {"href": re.compile('/Jobs')}).text  # retrieve job title
+                except AttributeError:
+                    title = ""
+
+                try:
+                    company = job.find("a", {"itemprop": "hiringOrganization"}).text  # retrieve company
+                except AttributeError:
+                    company = ""
+
+                try:
+                    location = job.find("li", {"class": "location"}).find("a", {"href": re.compile('/Jobs')}).text  # retrieve job location
+                except AttributeError:
+                    location = ""
+
+                try:
+                    job_site = 'Irish Jobs'  # retrieve job site
+                except AttributeError:
+                    job_site = ""
+
+                try:
+                    post_date = job.find("li", {"itemprop": "datePosted"}).text.replace('Updated ', '')  # retrieve job post date
+                except AttributeError:
+                    post_date = ""
+
+                try:
+                    post_date = job.find("li", {"itemprop": "datePosted"}).text.replace('Updated ', '')  # retrieve job post date
+                except AttributeError:
+                    post_date = ""
+
+                try:
+                    extract_date = datetime.today().strftime('%d/%m/%Y')  # retrieve extract date (when script ran to retrieve jobs)
+                except AttributeError:
+                    extract_date = ""
 
                 a = datetime.strptime(extract_date, "%d/%m/%Y").date()  # converting 'extract_date' to datetime object
                 b = datetime.strptime(post_date, "%d/%m/%Y").date()   # converting 'post_date' to datetime object
@@ -83,10 +118,12 @@ class IrishjobsJobScraper:
                 if post_date_days == '0:00:00':
                     post_date_days = 'Today'
 
-                job_url = 'https://www.irishjobs.ie' + job.find("h2", {"itemprop": "title"}).find("a", {"href": re.compile('/Jobs')}).get('href')  # retrieve job url
+                try:
+                    job_url = 'https://www.irishjobs.ie' + job.find("h2", {"itemprop": "title"}).find("a", {"href": re.compile('/Jobs')}).get('href')  # retrieve job url
+                except AttributeError:
+                    job_url = ""
 
                 record = (title, company, location, job_site, post_date_days, extract_date, job_url)  # add all variables into record (tuple)
-
                 records.append(record)  # append current job card to records list
 
             try:

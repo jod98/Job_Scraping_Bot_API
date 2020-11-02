@@ -33,7 +33,8 @@ class LinkedinJobScraper:
         login_pass.clear()  # clear current contents
         login_pass.send_keys(self.linkedin_password)  # find 'password' textbox
         login_pass.send_keys(Keys.RETURN)  # simulates pressing "enter" on keyboard i.e. submit
-        sleep(5)  # loading time
+        #sleep(5)  # loading time
+        sleep(120)  # security verification
 
     def job_search(self, linkedin_position, linkedin_location):
         """Access 'Jobs' Section and Input Position and Location"""
@@ -78,7 +79,6 @@ class LinkedinJobScraper:
         no_of_jobs = self.driver.find_element_by_xpath("//small[@class='display-flex t-12 t-black--light t-normal']").text.split()[0].replace(',', '')  # retrieving number of jobs value from page
 
         while True:  # do this forever (until we break out at the end when we hit condition - no more pages left to search through)
-
             # Scroll to bottom of page to load all the listings - Linkedin integrates lazy loading
             scroll_box = self.driver.find_element_by_xpath("/html/body/div[8]/div[3]/div[3]/div/div/div/div/section/div")  # locating 'scroll box'
             last_ht = 0  # old height of scrollbox
@@ -94,16 +94,42 @@ class LinkedinJobScraper:
             job_card = soup.find_all("div", {"class": re.compile('job-card-container relative job-card')})  # find all job cards/listings
 
             for job in job_card:  # iterate through all job listings
-                title = job.find("a", {"class": re.compile('job-card-list__title')}).text.strip()  # retrieve job title
-                company = job.find("a", {"class": re.compile('company-name ember-view')}).text.strip()  # retrieve company
-                location = job.find("li", {"class": 'job-card-container__metadata-item'}).text.strip()  # retrieve job location
-                job_site = 'Linkedin'  # retrieve job site
-                post_date = job.find("time", {"datetime": re.compile('2')}).text.strip().replace(' ago', '')  # retrieve job post date
-                extract_date = datetime.today().strftime('%d/%m/%Y')  # retrieve extract date (when script ran to retrieve jobs)
-                job_url = 'https://www.linkedin.com' + job.find("div", {"class": re.compile('mr1 artdeco')}).find("a", {"href": re.compile('/jobs')}).get('href')  # retrieve job url
+                try:
+                    title = job.find("a", {"class": re.compile('job-card-list__title')}).text.strip()  # retrieve job title
+                except AttributeError:
+                    title = ""
+
+                try:
+                    company = job.find("a", {"class": re.compile('company-name ember-view')}).text.strip()  # retrieve company
+                except AttributeError:
+                    company = ""
+
+                try:
+                    location = job.find("li", {"class": 'job-card-container__metadata-item'}).text.strip()  # retrieve job location
+                except AttributeError:
+                    location = ""
+
+                try:
+                    job_site = 'Linkedin'  # retrieve job site
+                except AttributeError:
+                    job_site = ""
+
+                try:
+                    post_date = job.find("time", {"datetime": re.compile('2')}).text.strip().replace(' ago', '')  # retrieve job post date
+                except AttributeError:
+                    post_date = ""
+
+                try:
+                    extract_date = datetime.today().strftime('%d/%m/%Y')  # retrieve extract date (when script ran to retrieve jobs)
+                except AttributeError:
+                    extract_date = ""
+
+                try:
+                    job_url = 'https://www.linkedin.com' + job.find("div", {"class": re.compile('mr1 artdeco')}).find("a", {"href": re.compile('/jobs')}).get('href')  # retrieve job url
+                except AttributeError:
+                    job_url = ""
 
                 record = (title, company, location, job_site, post_date, extract_date, job_url)  # add all variables into record (tuple)
-
                 records.append(record)  # append current job card to records list
 
             try:
@@ -111,8 +137,8 @@ class LinkedinJobScraper:
 
                 if int(no_of_jobs) > 25:  # 25 job posts per page... if there are more than 25 in total then we decrease 'no_of_jobs' by 25 each time so we don't iterate through pages forever
                     if "&start=" in str(current_page):  # currently on page 2 or more
-                        split_url = current_page.split('=Ireland', 1)[-1]  # get value of current page we on i.e. '&start=25'
-                        next_page = current_page.replace(split_url, '') + '&Page=' + str(next_page_value)  # creating the next page url to redirect to '&start=25', '&start=50' etc.
+                        split_url = current_page.split('Ireland', 1)[-1]  # get value of current page we on i.e. '&start=25'
+                        next_page = current_page.replace(split_url, '') + '&start=' + str(next_page_value)  # creating the next page url to redirect to '&start=25', '&start=50' etc.
                         self.driver.get(next_page)  # retrieve 'next page'
                         sleep(5)  # loading time
 

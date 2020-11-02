@@ -74,25 +74,50 @@ class GlassdoorJobScraper:
             job_card = soup.find_all("li", re.compile("jl react-job-listing gdGrid"))  # find all job cards/listings i.e. find 'li' tags that contains 'jl react...'
 
             for job in job_card:  # iterate through all job listings
-                title = job.find(name="a",
-                                 class_="jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink").text  # retrieve job title
-                company = job.find(name="div",
-                                   class_="jobHeader d-flex justify-content-between align-items-start").text  # retrieve company name
-                location = job.find(name="span", class_="loc css-nq3w9f pr-xxsm").text  # retrieve job location
-                job_site = 'Glassdoor'  # retrieve job site
-                post_date = job.find(name="div",
-                                     class_="d-flex align-items-end pl-std css-mi55ob").text  # retrieve job post date. Either '1d' or '1h' so...
-                if 'd' in post_date:
-                    post_date_new = post_date.replace('d', ' days')  # if post_date has 'd', replace with 'days'
-                if 'h' in post_date:
-                    post_date_new = post_date.replace('h', ' hours')  # if post_date has 'h', replace with 'hours'
-                extract_date = datetime.today().strftime(
-                    '%Y-%m-%d')  # retrieve extract date (when script ran to retrieve jobs)
-                job_url = 'https://www.glassdoor.ie' + job.div.a.get('href')  # retrieve job url
+                try:
+                    title = job.find(name="a",
+                                     class_="jobInfoItem jobTitle css-13w0lq6 eigr9kq1 jobLink").text  # retrieve job title
+                except AttributeError:
+                    title = ""
 
-                record = (title, company, location, job_site, post_date_new, extract_date,
-                          job_url)  # add all variables into record (tuple)
+                try:
+                    company = job.find(name="div",
+                                       class_="jobHeader d-flex justify-content-between align-items-start").text  # retrieve company name
+                except AttributeError:
+                    company = ""
 
+                try:
+                    location = job.find(name="span", class_="loc css-nq3w9f pr-xxsm").text  # retrieve job location
+                except AttributeError:
+                    location = ""
+
+                try:
+                    job_site = 'Glassdoor'  # retrieve job site
+                except AttributeError:
+                    job_site = ""
+
+                try:
+                    post_date = job.find(name="div",
+                                         class_="d-flex align-items-end pl-std css-mi55ob").text  # retrieve job post date. Either '1d' or '1h' so...
+                    if 'd' in post_date:
+                        post_date_new = post_date.replace('d', ' days')  # if post_date has 'd', replace with 'days'
+                    if 'h' in post_date:
+                        post_date_new = post_date.replace('h', ' hours')  # if post_date has 'h', replace with 'hours'
+                except AttributeError:
+                    post_date = ""
+
+                try:
+                    extract_date = datetime.today().strftime(
+                        '%Y-%m-%d')  # retrieve extract date (when script ran to retrieve jobs)
+                except AttributeError:
+                    extract_date = ""
+
+                try:
+                    job_url = 'https://www.glassdoor.ie' + job.div.a.get('href')  # retrieve job url
+                except AttributeError:
+                    job_url = ""
+
+                record = (title, company, location, job_site, post_date_new, extract_date,job_url)  # add all variables into record (tuple)
                 records.append(record)  # append current job card to records list
 
             page_x_of_x = soup.find(name="div", class_="cell middle hideMob padVertSm").text.replace('Page ', '')  # remove the 'page' from variable i.e. 'page 1 of 2' -> '1 of 2'
