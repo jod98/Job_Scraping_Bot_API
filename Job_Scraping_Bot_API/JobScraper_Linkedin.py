@@ -33,8 +33,7 @@ class LinkedinJobScraper:
         login_pass.clear()  # clear current contents
         login_pass.send_keys(self.linkedin_password)  # find 'password' textbox
         login_pass.send_keys(Keys.RETURN)  # simulates pressing "enter" on keyboard i.e. submit
-        #sleep(5)  # loading time
-        sleep(120)  # security verification
+        sleep(5)  # loading time
 
     def job_search(self, linkedin_position, linkedin_location):
         """Access 'Jobs' Section and Input Position and Location"""
