@@ -5,7 +5,7 @@ Due to recent (COVID-19) pandemic, it has proved a great challenge to secure a j
 
 Setup:
 1. Clone the repository and store it in a directory of your choice
-2. In the "Job_Scraping_Bot_API/Login_Credentials/login_credentials.json" file simply add your 'username' and 'password' for all the following job sites
-3. In the "Job_Scraping_Bot_API/Job_Details/" directory simply add your desired 'job title' and 'location' into the various '.txt' file names in the way I have presented (this will avoid errors as some job boards job inputs are case sensitive and implement drop down menus to select location)
+2. In the "Job_Scraping_Bot_API/Login_Credentials/login_credentials.json" file, simply add your 'username' and 'password' for all the following job sites
+3. In the "Job_Scraping_Bot_API/Job_Details/" directory, simply add your desired 'job title' and 'location' into the various '.txt' file names in the way I have presented (this will avoid errors as some job boards job inputs are case sensitive and implement drop down menus to select location)
 4. Lastly, simply run the "JobScrapersActivator.py" file and a '.csv' file containing all job listings (which removes duplicates entries if found on another site) will be created in your current directory.
 
