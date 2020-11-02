@@ -14,15 +14,15 @@ with open('Job_Listings_Duplicates.csv', 'w', newline='', encoding='utf-8') as j
     job_listings_duplicates.writerow(
         ['Title', 'Company', 'Location', 'Job Site', 'Post Date', 'Extract Date', 'Job URL'])  # write in the headers into the first row
 
-print('Glassdoor Job Scraper Initiated!!!')
-exec(open("JobScraper_Glassdoor.py").read())  # run the glassdoor job scraper
-print('Glassdoor Job Scraper Finished!!!')
-print('')
-sleep(5)  # loading time
-
 print('Linkedin Job Scraper Initiated!!!')
 exec(open("JobScraper_Linkedin.py").read())  # run the linkedin job scraper
 print('Linkedin Job Scraper Finished!!!')
+print('')
+sleep(5)  # loading time
+
+print('Glassdoor Job Scraper Initiated!!!')
+exec(open("JobScraper_Glassdoor.py").read())  # run the glassdoor job scraper
+print('Glassdoor Job Scraper Finished!!!')
 print('')
 sleep(5)  # loading time
 
