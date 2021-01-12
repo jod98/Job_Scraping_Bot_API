@@ -1,4 +1,7 @@
 # Job_Scraping_Bot_API-Python
+
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/36043248/104362088-3f4dda00-550b-11eb-8b83-f068eb02afd7.gif)
+
 Automating the Process of Searching for Jobs using the Selenium Open-Source API through 4 Major Job Sites (Indeed, Glassdoor, Linkedin, IrishJobs)
 
 Due to recent (COVID-19) pandemic, it has proved a great challenge to secure a job directly after graduating in 2020. As a result of the circumstances, I decided to improvise and improve upon my technical skills and knowledge, one example being this project. This project gives users the ability to automate the job searching and application process while applying an array of preferred filters. 
